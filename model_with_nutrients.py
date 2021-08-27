@@ -43,7 +43,7 @@ C[0] = 0.5
 
 #function for nutrients
 def nutrients(N):
-    dNdt = S_R - (mu1*N*P1[i-1]) - (mu2*N*P2[i-1])
+    dNdt = S_R - (mu1*(N/N+(mu1/alpha_n))*P1[i-1]) - (mu2*(N/N+(mu2/alpha_n))*P2[i-1])
     return dNdt
     #(N/N+(mu1/alpha_n))
 
@@ -54,12 +54,12 @@ def irradiance_function(zetas, P1,P2, k, l, dep_size):
 
 #function for P1
 def producer1(P1):
-    dP1dt = (mu1*N[i-1]*P1) - (phi1*P1*C[i-1]) - (delta1*P1)     
+    dP1dt = (mu1*(N[i-1]/N[i-1]+(mu1/alpha_n))*P1) - (phi1*P1*C[i-1]) - (delta1*P1)     
     return dP1dt
 
 #function for P2
 def producer2(P2):
-    dP2dt = (mu2*N[i-1]*P2) - (phi2*P2*C[i-1]) - (delta2*P2) 
+    dP2dt = (mu2*(N[i-1]/N[i-1]+(mu2/alpha_n))*P2) - (phi2*P2*C[i-1]) - (delta2*P2) 
     return  dP2dt
 
 #function for C
