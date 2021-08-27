@@ -14,9 +14,9 @@ k_w = 0.02 #light attenuation by just water
 k_p = 0.001 #attenuation due to producers
 delta1 = 0.01 #death rate of producer 1
 delta2 = 0.01 #death rate of producer 2
-mu1 = 0.7 #resource affinity parameter for p1
-mu2 = 0.3 #resource affinity parameter for p2
-alpha_n = 1.0 #saturation of nutrients
+mu1 = 2.0 #resource affinity parameter for p1
+mu2 = 1.0 #resource affinity parameter for p2
+alpha_n = 500 #saturation of nutrients
 alpha_i = 1.0 #saturation of light
 S_R = 0.2 #supply rate
 
@@ -43,9 +43,8 @@ C[0] = 0.5
 
 #function for nutrients
 def nutrients(N):
-    dNdt = S_R - (mu1*(N/N+(mu1/alpha_n))*P1[i-1]) - (mu2*(N/N+(mu2/alpha_n))*P2[i-1])
+    dNdt = S_R - (mu1*(N/(N+alpha_n))*P1[i-1]) - (mu2*(N/(N+alpha_n))*P2[i-1])
     return dNdt
-    #(N/N+(mu1/alpha_n))
 
 #light function
 def irradiance_function(zetas, P1,P2, k, l, dep_size):
@@ -54,12 +53,12 @@ def irradiance_function(zetas, P1,P2, k, l, dep_size):
 
 #function for P1
 def producer1(P1):
-    dP1dt = (mu1*(N[i-1]/N[i-1]+(mu1/alpha_n))*P1) - (phi1*P1*C[i-1]) - (delta1*P1)     
+    dP1dt = (mu1*(N[i-1]/(N[i-1]+alpha_n))*P1) - (phi1*P1*C[i-1]) - (delta1*P1)     
     return dP1dt
 
 #function for P2
 def producer2(P2):
-    dP2dt = (mu2*(N[i-1]/N[i-1]+(mu2/alpha_n))*P2) - (phi2*P2*C[i-1]) - (delta2*P2) 
+    dP2dt = (mu2*(N[i-1]/(N[i-1]+alpha_n))*P2) - (phi2*P2*C[i-1]) - (delta2*P2) 
     return  dP2dt
 
 #function for C
