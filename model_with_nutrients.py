@@ -9,11 +9,11 @@ phi1 = 0.4 #interaction strength for p1
 phi2 = 0.1 #interaction strength for p2
 eps1 = 0.4 #transfer efficiency for p1
 eps2 = 0.3 #transfer efficiency for p2
-delta_c = 0.01 #consumer mortality
+delta_c = 0.001 #consumer mortality
 k_w = 0.02 #light attenuation by just water
 k_p = 0.001 #attenuation due to producers
-delta1 = 0.01 #death rate of producer 1
-delta2 = 0.01 #death rate of producer 2
+delta1 = 0.001 #death rate of producer 1
+delta2 = 0.001 #death rate of producer 2
 mu1 = 2.0 #resource affinity parameter for p1
 mu2 = 1.0 #resource affinity parameter for p2
 alpha_n = 500 #saturation of nutrients
@@ -76,7 +76,7 @@ for I_naught in I_naughts:
     loop = irradiance_function(zetas, P1, P2, k, l, dep_size)
     light_list.append(loop)
 light_array = np.array(light_list)
-print(light_array.shape)
+print('light array shape from I function', light_array.shape)
 
 # creating irradiance array for figure
 Is = [] #empty list
@@ -86,6 +86,7 @@ for I_naught in I_naughts:
     Is.append(I)
 light_att = np.array(Is) # make list into an array
 lights = light_att.T #transpose
+print('irradiance array from contour figure', lights.shape)
  
 #building 2 dimensional arrays for nutrients, producer, and consumer groups
 for i in  range(1, len(t)):
