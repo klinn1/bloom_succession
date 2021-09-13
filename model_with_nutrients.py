@@ -17,8 +17,8 @@ delta1 = 0.1 #death rate of producer 1
 delta2 = 0.1 #death rate of producer 2
 mu1 = 3.0 #resource affinity parameter for p1
 mu2 = 2.0 #resource affinity parameter for p2
-alpha_n = 500 #saturation of nutrients
-alpha_i = 1.0 #saturation of light
+alpha_n = 0.01 #saturation of nutrients
+alpha_i = 0.01 #saturation of light
 S_R = 0.4 #supply rate
 
 # time change (discrete time)
@@ -71,9 +71,12 @@ print('irradiance array from contour figure', lights.shape)
 #building 2 dimensional arrays for nutrients, producer, and consumer groups
 for i in  range(1, len(t)):
     for j in range(0,len(zetas)):
-        dNdt = S_R - (mu1*N[i-1,j]*P1[i-1,j]) - (mu2*N[i-1,j]*P2[i-1,j])
-        dP1dt = (mu1*N[i-1,j]*P1[i-1,j]) - (phi1*P1[i-1,j]*C[i-1,j]) - (delta1*P1[i-1,j])
-        dP2dt = (mu2*N[i-1,j]*P2[i-1,j]) - (phi2*P2[i-1,j]*C[i-1,j]) - (delta2*P2[i-1,j])
+        I = I_naughts[i] * np.exp(-(k_w*zetas[j]+np.sum(k_p*(P1[0,:j]+P2[0,:j])*j)))
+        mu1_growth = np.minimum((N[i-1,j]/(N[i-1,j]+(mu1/alpha_n))), (I/(I+(mu1/alpha_i))))
+        mu2_growth = np.minimum((N[i-1,j]/(N[i-1,j]+(mu2/alpha_n))), (I/(I+(mu2/alpha_i))))
+        dNdt = S_R - (mu1*mu1_growth*P1[i-1,j]) - (mu2*mu2_growth*P2[i-1,j])
+        dP1dt = (mu1*mu1_growth*P1[i-1,j]) - (phi1*P1[i-1,j]*C[i-1,j]) - (delta1*P1[i-1,j])
+        dP2dt = (mu2*mu2_growth*P2[i-1,j]) - (phi2*P2[i-1,j]*C[i-1,j]) - (delta2*P2[i-1,j])
         dCdt = (eps1*phi1*P1[i-1,j]*C[i-1,j]) + (eps2*phi2*P2[i-1,j]*C[i-1,j]) - (delta_c*C[i-1,j])
         N[i] = N[i-1,j-1] + dNdt * dt
         P1[i] = P1[i-1,j-1] + dP1dt * dt
