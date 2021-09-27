@@ -112,7 +112,7 @@ print('P1 shape = ', P1.shape)
 print('P2 shape = ', P2.shape)
 print('C shape = ', C.shape)
             
-fig, axs = plt.subplots(1,4,figsize=(20,6))
+fig, axs = plt.subplots(1,5,figsize=(24,6))
 
 #plotting supply rate over time
 axs[0].plot(t,supply_rate, color = 'black', linestyle = 'dotted')
@@ -150,7 +150,15 @@ custom_lines = [Line2D([0], [0], color='orange', linestyle = 'dashed', lw=1),
                 Line2D([0], [0], color='grey', linestyle = 'dotted',  lw=1)]
 axs[3].legend(custom_lines, ['Producer 1', 'Producer 2', 'Consumer'])
 
+axs[4].plot(supply_rate,P1.T[0], '--', color = 'orange')
+axs[4].plot(supply_rate,P2.T[0], color = 'blue')
+axs[4].set_title('Producer Biomass as $S_R$ Increases')
+axs[4].set_ylabel('Biomass (mmol C/ m$^{3}$ day)', color = 'k')
+axs[4].set_xlabel('$S_R$')
 
 plt.tight_layout()
 plt.show()
+
+
+
 
