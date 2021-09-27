@@ -112,7 +112,7 @@ print('P1 shape = ', P1.shape)
 print('P2 shape = ', P2.shape)
 print('C shape = ', C.shape)
             
-fig, axs = plt.subplots(1,5,figsize=(24,6))
+fig, axs = plt.subplots(1,5,figsize=(30,6))
 
 #plotting supply rate over time
 axs[0].plot(t,supply_rate, color = 'black', linestyle = 'dotted')
