@@ -150,6 +150,7 @@ custom_lines = [Line2D([0], [0], color='orange', linestyle = 'dashed', lw=1),
                 Line2D([0], [0], color='grey', linestyle = 'dotted',  lw=1)]
 axs[3].legend(custom_lines, ['Producer 1', 'Producer 2', 'Consumer'])
 
+
 plt.tight_layout()
 plt.show()
 

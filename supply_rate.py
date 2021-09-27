@@ -52,6 +52,7 @@ year10 = np.empty(365)
 year10.fill(0.70)
 supply_rate = np.append(supply_rate,year10)
 
+
 #plotting supply rate over time
 plt.plot(t,supply_rate, color = 'black', linestyle = 'dotted')
 plt.title('Supply Rate')
