@@ -70,11 +70,13 @@ I_min = 2
 #combine I_naught arrays 
 #I_naughts = np.append(I_naughts,I_naughts2)
 
-for k in t:
-    if k<1825:
-        I_naughts = I_min 
-    else: 
-        I_naughts = I_min + ((I_max-I_min)*(np.sin(((t)/365*2*math.pi-math.pi/2))+1))
+for a in t:
+    if a<=1825.0:
+        x = 0
+        I_naughts = I_min + (((I_max-I_min)*(np.sin(((t)/365*2*math.pi-math.pi/2))+1))*x)
+    else:
+        x = 1
+        I_naughts = I_min + (((I_max-I_min)*(np.sin(((t)/365*2*math.pi-math.pi/2))+1))*x)
         
 
 #building 2 dimensional arrays for nutrients, producer, and consumer groups
