@@ -59,24 +59,24 @@ P2[0,:] = 0.5
 C[0,:] = 0.5
 
 #initial light irradiance (constant)
-#I_naughts = np.empty(1825)
-#I_naughts.fill(2)
+I_naughts = np.empty(len(t))
+I_naughts.fill(2)
 
 #inital light irradiance (seasonal)
 I_max = 1000
-I_min = 2
-#I_naughts2 = (np.sin(((t)/365*2*math.pi-math.pi/2))+1)*I_max/2
+I_min = 500
+# I_naughts2 = (np.sin(((t)/365*2*math.pi-math.pi/2))+1)*I_max/2
 
 #combine I_naught arrays 
-#I_naughts = np.append(I_naughts,I_naughts2)
+# I_naughts = np.append(I_naughts,I_naughts2)
 
+i = 0
 for a in t:
     if a<=1825.0:
-        x = 0
-        I_naughts = I_min + (((I_max-I_min)*(np.sin(((t)/365*2*math.pi-math.pi/2))+1))*x)
+        I_naughts[i] = I_min
     else:
-        x = 1
-        I_naughts = I_min + (((I_max-I_min)*(np.sin(((t)/365*2*math.pi-math.pi/2))+1))*x)
+        I_naughts[i] = I_min + (I_max-I_min)/2.*(np.sin(((a)/365*2*np.pi-np.pi/2))+1)
+    i = i + 1
         
 
 #building 2 dimensional arrays for nutrients, producer, and consumer groups
