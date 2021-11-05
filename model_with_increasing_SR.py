@@ -6,70 +6,46 @@ import math
 import sys
 
 # time change (discrete time)
-T = 3650.0 #days
+T = 5475.0 #days
 dt = 1
 #time array
 t = np.linspace(0, T, int(T/dt))
 
-#supply rate array for 10 years, increasing stepwise
-supply_rate = np.empty(365)
+#first 5 years = 0-1825 days
+#second 5 years = 1826 - 3650 days
+#third 5 years = 3651 - 5475 days
+
+supply_rate = np.empty(3650)
 supply_rate.fill(0.04)
 
-year2 = np.empty(365)
-year2.fill(0.11)
-supply_rate = np.append(supply_rate,year2)
+year11 = np.empty(365)
+year11.fill(0.11)
+supply_rate = np.append(supply_rate,year11)
 
-year3 = np.empty(365)
-year3.fill(0.18)
-supply_rate = np.append(supply_rate,year3)
+year12 = np.empty(365)
+year12.fill(0.18)
+supply_rate = np.append(supply_rate,year12)
 
-year4 = np.empty(365)
-year4.fill(0.26)
-supply_rate = np.append(supply_rate,year4)
+year13 = np.empty(365)
+year13.fill(0.26)
+supply_rate = np.append(supply_rate,year13)
 
-year5 = np.empty(365)
-year5.fill(0.33)
-supply_rate = np.append(supply_rate,year5)
+year14 = np.empty(365)
+year14.fill(0.33)
+supply_rate = np.append(supply_rate,year14)
 
-year6 = np.empty(365)
-year6.fill(0.40)
-supply_rate = np.append(supply_rate,year6)
+year15 = np.empty(365)
+year15.fill(0.40)
+supply_rate = np.append(supply_rate,year15)
 
-year7 = np.empty(365)
-year7.fill(0.48)
-supply_rate = np.append(supply_rate,year7)
-
-year8 = np.empty(365)
-year8.fill(0.55)
-supply_rate = np.append(supply_rate,year8)
-
-year9 = np.empty(365)
-year9.fill(0.62)
-supply_rate = np.append(supply_rate,year9)
-
-year10 = np.empty(365)
-year10.fill(0.70)
-supply_rate = np.append(supply_rate,year10)
-
-#parameter values
-phi1 = 0.2 #interaction strength for p1
-phi2 = 0.1 #interaction strength for p2
-eps1 = 0.4 #transfer efficiency for p1
-eps2 = 0.3 #transfer efficiency for p2
-delta_c = 0.1 #consumer mortality
 k_w = 0.02 #light attenuation by just water
 k_p = 0.001 #attenuation due to producers
-delta1 = 0.1 #death rate of producer 1
-delta2 = 0.1 #death rate of producer 2
-mu1 = 3.0 #resource affinity parameter for p1
-mu2 = 2.0 #resource affinity parameter for p2
-alpha_n = 0.01 #saturation of nutrients
-alpha_i = 0.01 #saturation of light
 
 #depth array
-deltaz = 1
+deltaz = 0.5
 depth = 100
 zetas = np.linspace(0,depth,int(depth/deltaz)) 
+
 
 # array  to store  the  solution if you were using Euler's method
 N = np.zeros((len(t),len(zetas)))
@@ -81,15 +57,36 @@ N[0,:] = 0.4
 P1[0,:] = 0.5
 P2[0,:] = 0.5
 C[0,:] = 0.5
-#print(N.shape)
-
-#inital light irradiance (seasonal)
-#I_max = 1000
-#I_naughts = (np.sin(((t)/365*2*math.pi-math.pi/2))+1)*I_max/2
 
 #initial light irradiance (constant)
-I_naughts = np.empty(int(T/dt))
-I_naughts.fill(2)
+I_naughts = np.empty(len(t))
+
+#inital light irradiance (seasonal)
+I_max = 1000
+I_min = 300
+
+i = 0
+for a in t:
+    if a<=1825.0:
+        I_naughts[i] = I_min
+    else:
+        I_naughts[i] = I_min + (I_max-I_min)/2.*(np.sin(((a)/365*2*np.pi-np.pi/2))+1)
+    i = i + 1
+        
+#parameter values
+phi1 = 0.2 #interaction strength for p1
+phi2 = 0.1 #interaction strength for p2
+eps1 = 0.4 #transfer efficiency for p1
+eps2 = 0.3 #transfer efficiency for p2
+delta_c = 0.1 #consumer mortality
+k_w = 0.02 #light attenuation by just water
+k_p = 0.001 #attenuation due to producers
+delta1 = 0.01 #death rate of producer 1
+delta2 = 0.01 #death rate of producer 2
+mu1 = 1.0 #resource affinity parameter for p1
+mu2 = 0.8 #resource affinity parameter for p2
+alpha_n = 0.5 #saturation of nutrients
+alpha_i = 0.5 #saturation of light
 
  
 #building 2 dimensional arrays for nutrients, producer, and consumer groups
@@ -99,17 +96,20 @@ for i in  range(1, len(t)):
         I = I_naughts[i] * np.exp(-(k_w*zetas[j]*(deltaz)+np.sum(k_p*(P1[0,:j]+P2[0,:j])*(deltaz))))
         mu1_growth = np.minimum((N[i-1,j]/(N[i-1,j]+(mu1/alpha_n))), (I/(I+(mu1/alpha_i))))
         mu2_growth = np.minimum((N[i-1,j]/(N[i-1,j]+(mu2/alpha_n))), (I/(I+(mu2/alpha_i))))
-        dNdt = supply_rate[i] - (mu1*mu1_growth*P1[i-1,j]) - (mu2*mu2_growth*P2[i-1,j])
+        dNdt = supply_rate[i] - (mu1*mu1_growth*P1[i-1,j]) - (mu2*mu2_growth*P2[i-1,j]) + (delta1*P1[i-1,j]) +(delta2*P2[i-1,j])
+        #print(dNdt)
         dP1dt = (mu1*mu1_growth*P1[i-1,j]) - (phi1*P1[i-1,j]*C[i-1,j]) - (delta1*P1[i-1,j])
         dP2dt = (mu2*mu2_growth*P2[i-1,j]) - (phi2*P2[i-1,j]*C[i-1,j]) - (delta2*P2[i-1,j])
+        #print(mu1_growth, mu2_growth, mu1*mu1_growth*P1[i-1,j], mu2*mu2_growth*P2[i-1,j], dP1dt, dP2dt)
         dCdt = (eps1*phi1*P1[i-1,j]*C[i-1,j]) + (eps2*phi2*P2[i-1,j]*C[i-1,j]) - (delta_c*C[i-1,j])
+        #print(dCdt)
+        #break
         N[i,j] = N[i-1,j] + dNdt * dt
         P1[i,j] = P1[i-1,j] + dP1dt * dt
         P2[i,j] = P2[i-1,j] + dP2dt * dt
         C[i,j] = C[i-1,j] + dCdt * dt
         light[i,j] = I
 
-print('light shape = ',light.shape)
 # print shape of arrays for nutrients, producer, and consumer groups
 print('N shape = ', N.shape)
 print('P1 shape = ', P1.shape)
