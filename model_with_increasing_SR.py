@@ -137,13 +137,13 @@ fig.colorbar(cb, cax=cax, orientation='vertical')
 
 #plotting nutrients
 #axs[2].plot(t,N.T[0], color = 'red')
-axs[0,2].pcolor(N,cmap = 'hot')
+axs[0,2].pcolor(N.T,cmap = 'hot')
 axs[0,2].set_xlabel('Time (days)', color = 'k')
 axs[0,2].set_ylabel('Concentration (mmol C/ m$^{3}$)', color = 'k')
 axs[0,2].set_title('Nutrient Concentration')
 
 #plotting biomass
-pro1 = axs[1,0].pcolor(P1,cmap = 'hot')
+pro1 = axs[1,0].pcolor(P1.T,cmap = 'hot')
 axs[1,0].invert_yaxis()
 axs[1,0].set_xlabel('Time (Days)', color = 'k')
 axs[1,0].set_ylabel('Depth (Meters)', color = 'k')
@@ -155,7 +155,7 @@ divider = make_axes_locatable(axs[1,0])
 cax = divider.append_axes('right', size='5%', pad=0.05)
 fig.colorbar(cb, cax=cax, orientation='vertical')
 
-pro2 = axs[1,1].pcolor(P2, cmap = 'hot')
+pro2 = axs[1,1].pcolor(P2.T, cmap = 'hot')
 axs[1,1].invert_yaxis()
 axs[1,1].set_xlabel('Time (Days)', color = 'k')
 axs[1,1].set_ylabel('Depth (Meters)', color = 'k')
@@ -167,7 +167,7 @@ divider = make_axes_locatable(axs[1,1])
 cax = divider.append_axes('right', size='5%', pad=0.05)
 fig.colorbar(cb, cax=cax, orientation='vertical')
 
-con = axs[1,2].pcolor(C,cmap = 'hot')
+con = axs[1,2].pcolor(C.T,cmap = 'hot')
 axs[1,2].invert_yaxis()
 axs[1,2].set_xlabel('Time (Days)', color = 'k')
 axs[1,2].set_ylabel('Depth (Meters)', color = 'k')
