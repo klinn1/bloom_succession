@@ -86,7 +86,7 @@ delta2 = 0.01 #death rate of producer 2
 mu1 = 1.0 #resource affinity parameter for p1
 mu2 = 0.8 #resource affinity parameter for p2
 alpha_n = 0.5 #saturation of nutrients
-alpha_i = 0.5 #saturation of light
+alpha_i = 0.0005 #saturation of light
 
  
 #building 2 dimensional arrays for nutrients, producer, and consumer groups
@@ -145,9 +145,7 @@ axs[0,2].set_title('Nutrient Concentration')
 #plotting biomass
 pro1 = axs[1,0].pcolor(P1.T,cmap = 'hot')
 axs[1,0].invert_yaxis()
-axs[1,0].set_xlabel('Time (Days)', color = 'k')
-axs[1,0].set_ylabel('Depth (Meters)', color = 'k')
-axs[1,0].set_title('Irradiance')
+
 axs[1,0].set_xlabel('Time (days)', color = 'k')
 axs[1,0].set_ylabel('Biomass (mmol C/ m$^{3}$ day)', color = 'k')
 axs[1,0].set_title('Biomass of Producer 1')
@@ -157,9 +155,6 @@ fig.colorbar(cb, cax=cax, orientation='vertical')
 
 pro2 = axs[1,1].pcolor(P2.T, cmap = 'hot')
 axs[1,1].invert_yaxis()
-axs[1,1].set_xlabel('Time (Days)', color = 'k')
-axs[1,1].set_ylabel('Depth (Meters)', color = 'k')
-axs[1,1].set_title('Irradiance')
 axs[1,1].set_xlabel('Time (days)', color = 'k')
 axs[1,1].set_ylabel('Biomass (mmol C/ m$^{3}$ day)', color = 'k')
 axs[1,1].set_title('Biomass of Producer 2')
@@ -169,9 +164,6 @@ fig.colorbar(cb, cax=cax, orientation='vertical')
 
 con = axs[1,2].pcolor(C.T,cmap = 'hot')
 axs[1,2].invert_yaxis()
-axs[1,2].set_xlabel('Time (Days)', color = 'k')
-axs[1,2].set_ylabel('Depth (Meters)', color = 'k')
-axs[1,2].set_title('Irradiance')
 axs[1,2].set_xlabel('Time (days)', color = 'k')
 axs[1,2].set_ylabel('Biomass (mmol C/ m$^{3}$ day)', color = 'k')
 axs[1,2].set_title('Biomass of Consumer')
