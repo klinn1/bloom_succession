@@ -19,23 +19,23 @@ supply_rate = np.empty(3650)
 supply_rate.fill(0.04)
 
 year11 = np.empty(365)
-year11.fill(0.11)
+year11.fill(0.08)
 supply_rate = np.append(supply_rate,year11)
 
 year12 = np.empty(365)
-year12.fill(0.18)
+year12.fill(0.11)
 supply_rate = np.append(supply_rate,year12)
 
 year13 = np.empty(365)
-year13.fill(0.26)
+year13.fill(0.14)
 supply_rate = np.append(supply_rate,year13)
 
 year14 = np.empty(365)
-year14.fill(0.33)
+year14.fill(0.17)
 supply_rate = np.append(supply_rate,year14)
 
 year15 = np.empty(365)
-year15.fill(0.40)
+year15.fill(0.20)
 supply_rate = np.append(supply_rate,year15)
 
 k_w = 0.02 #light attenuation by just water
@@ -90,10 +90,23 @@ alpha_i = 0.0005 #saturation of light
 
  
 #building 2 dimensional arrays for nutrients, producer, and consumer groups
-for i in  range(1, len(t)):
+total_time_arr = []
+total_zeta_arr = []
+total_color_arr = []
+for i in range(1, len(t)):
     #print(t[i])
     for j in range(0,len(zetas)):
         I = I_naughts[i] * np.exp(-(k_w*zetas[j]*(deltaz)+np.sum(k_p*(P1[0,:j]+P2[0,:j])*(deltaz))))
+
+        if (N[i-1,j]/(N[i-1,j]+(mu1/alpha_n)) > I/(I+(mu1/alpha_i))):
+            total_time_arr.append(i)
+            total_zeta_arr.append(zetas[j])
+            total_color_arr.append('tab:red')
+        else:
+            total_time_arr.append(i)
+            total_zeta_arr.append(zetas[j])
+            total_color_arr.append('tab:blue')
+
         mu1_growth = np.minimum((N[i-1,j]/(N[i-1,j]+(mu1/alpha_n))), (I/(I+(mu1/alpha_i))))
         mu2_growth = np.minimum((N[i-1,j]/(N[i-1,j]+(mu2/alpha_n))), (I/(I+(mu2/alpha_i))))
         dNdt = supply_rate[i] - (mu1*mu1_growth*P1[i-1,j]) - (mu2*mu2_growth*P2[i-1,j]) + (delta1*P1[i-1,j]) +(delta2*P2[i-1,j])
@@ -117,7 +130,7 @@ print('P1 shape = ', P1.shape)
 print('P2 shape = ', P2.shape)
 print('C shape = ', C.shape)
             
-fig, axs = plt.subplots(2,3,figsize=(30,12))
+fig, axs = plt.subplots(3,3,figsize=(30,12))
 
 #plotting supply rate over time
 axs[0,0].plot(t,supply_rate, color = 'black', linestyle = 'dotted')
@@ -135,50 +148,57 @@ divider = make_axes_locatable(axs[0,1])
 cax = divider.append_axes('right', size='5%', pad=0.05)
 fig.colorbar(cb, cax=cax, orientation='vertical')
 
+#showing min as either nutrients or light
+im = axs[0,2].scatter(total_time_arr, total_zeta_arr, c=total_color_arr)
+axs[0,2].set_ylim(axs[0,2].get_ylim()[::-1])
+axs[0,2].set_ylabel('Depth')
+axs[0,2].set_xlabel('Time')
+
 #plotting nutrients
-#axs[2].plot(t,N.T[0], color = 'red')
-axs[0,2].pcolor(N.T,cmap = 'hot')
-axs[0,2].set_xlabel('Time (days)', color = 'k')
-axs[0,2].set_ylabel('Concentration (mmol C/ m$^{3}$)', color = 'k')
-axs[0,2].set_title('Nutrient Concentration')
-
-#plotting biomass
-pro1 = axs[1,0].pcolor(P1.T,cmap = 'hot')
-axs[1,0].invert_yaxis()
-
+axs[1,0].pcolor(N.T,cmap = 'hot')
 axs[1,0].set_xlabel('Time (days)', color = 'k')
-axs[1,0].set_ylabel('Biomass (mmol C/ m$^{3}$ day)', color = 'k')
-axs[1,0].set_title('Biomass of Producer 1')
+axs[1,0].set_ylabel('Concentration (mmol C/ m$^{3}$)', color = 'k')
+axs[1,0].set_title('Nutrient Concentration')
 divider = make_axes_locatable(axs[1,0])
 cax = divider.append_axes('right', size='5%', pad=0.05)
 fig.colorbar(cb, cax=cax, orientation='vertical')
 
-pro2 = axs[1,1].pcolor(P2.T, cmap = 'hot')
+#plotting biomass
+pro1 = axs[1,1].pcolor(P1.T,cmap = 'hot')
 axs[1,1].invert_yaxis()
+
 axs[1,1].set_xlabel('Time (days)', color = 'k')
 axs[1,1].set_ylabel('Biomass (mmol C/ m$^{3}$ day)', color = 'k')
-axs[1,1].set_title('Biomass of Producer 2')
+axs[1,1].set_title('Biomass of Producer 1')
 divider = make_axes_locatable(axs[1,1])
 cax = divider.append_axes('right', size='5%', pad=0.05)
 fig.colorbar(cb, cax=cax, orientation='vertical')
 
-con = axs[1,2].pcolor(C.T,cmap = 'hot')
+pro2 = axs[1,2].pcolor(P2.T, cmap = 'hot')
 axs[1,2].invert_yaxis()
 axs[1,2].set_xlabel('Time (days)', color = 'k')
 axs[1,2].set_ylabel('Biomass (mmol C/ m$^{3}$ day)', color = 'k')
-axs[1,2].set_title('Biomass of Consumer')
+axs[1,2].set_title('Biomass of Producer 2')
 divider = make_axes_locatable(axs[1,2])
+cax = divider.append_axes('right', size='5%', pad=0.05)
+fig.colorbar(cb, cax=cax, orientation='vertical')
+
+con = axs[2,0].pcolor(C.T,cmap = 'hot')
+axs[2,0].invert_yaxis()
+axs[2,0].set_xlabel('Time (days)', color = 'k')
+axs[2,0].set_ylabel('Biomass (mmol C/ m$^{3}$ day)', color = 'k')
+axs[2,0].set_title('Biomass of Consumer')
+divider = make_axes_locatable(axs[2,0])
 cax = divider.append_axes('right', size='5%', pad=0.05)
 fig.colorbar(cb, cax=cax, orientation='vertical')
 
 #supply rate versus producers (succesional pattern)
 #axs[4].plot(supply_rate,P1.T[0], '--', color = 'orange')
-#axs[4].plot(supply_rate,P2.T[0], color = 'blue')
-#axs[4].set_title('Producer Biomass as $S_R$ Increases')
-#axs[4].set_ylabel('Biomass (mmol C/ m$^{3}$ day)', color = 'k')
-#axs[4].set_xlabel('$S_R$')
+# #axs[4].plot(supply_rate,P2.T[0], color = 'blue')
+# #axs[4].set_title('Producer Biomass as $S_R$ Increases')
+# #axs[4].set_ylabel('Biomass (mmol C/ m$^{3}$ day)', color = 'k')
+# #axs[4].set_xlabel('$S_R$')
 
-#add_axis ... supply bounding box for each one
 
 plt.tight_layout()
 plt.show()
