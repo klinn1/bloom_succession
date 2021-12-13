@@ -75,40 +75,53 @@ for a in t:
         
 #parameter values
 phi1 = 0.2 #interaction strength for p1
-phi2 = 0.1 #interaction strength for p2
+phi2 = 0.2 #interaction strength for p2
 eps1 = 0.4 #transfer efficiency for p1
-eps2 = 0.3 #transfer efficiency for p2
-delta_c = 0.1 #consumer mortality
+eps2 = 0.4 #transfer efficiency for p2
+delta_c = 0.001 #consumer mortality
 k_w = 0.02 #light attenuation by just water
 k_p = 0.001 #attenuation due to producers
-delta1 = 0.01 #death rate of producer 1
-delta2 = 0.01 #death rate of producer 2
+delta1 = 0.001 #death rate of producer 1
+delta2 = 0.001 #death rate of producer 2
 mu1 = 1.0 #resource affinity parameter for p1
-mu2 = 0.8 #resource affinity parameter for p2
-alpha_n = 0.5 #saturation of nutrients
-alpha_i = 0.0005 #saturation of light
-
+mu2 = 1.0 #resource affinity parameter for p2
+alpha_n1 = 0.17 #saturation of nutrients for producer 1
+alpha_i1 = 0.017 #saturation of light for producer 1
+alpha_n2 = 0.17 #saturation of nutrients for producer 2
+alpha_i2 = 0.017 #saturation of light for producer 2
  
 #building 2 dimensional arrays for nutrients, producer, and consumer groups
-total_time_arr = []
-total_zeta_arr = []
-total_color_arr = []
+total_time_arr1 = []
+total_zeta_arr1 = []
+total_color_arr1 = []
+total_time_arr2 = []
+total_zeta_arr2 = []
+total_color_arr2 = []
 for i in range(1, len(t)):
     #print(t[i])
     for j in range(0,len(zetas)):
         I = I_naughts[i] * np.exp(-(k_w*zetas[j]*(deltaz)+np.sum(k_p*(P1[0,:j]+P2[0,:j])*(deltaz))))
 
-        if (N[i-1,j]/(N[i-1,j]+(mu1/alpha_n)) > I/(I+(mu1/alpha_i))):
-            total_time_arr.append(i)
-            total_zeta_arr.append(zetas[j])
-            total_color_arr.append('tab:red')
+        if (N[i-1,j]/(N[i-1,j]+(mu1/alpha_n1)) > I/(I+(mu1/alpha_i1))):
+            total_time_arr1.append(i)
+            total_zeta_arr1.append(zetas[j])
+            total_color_arr1.append('tab:red')
         else:
-            total_time_arr.append(i)
-            total_zeta_arr.append(zetas[j])
-            total_color_arr.append('tab:blue')
+            total_time_arr1.append(i)
+            total_zeta_arr1.append(zetas[j])
+            total_color_arr1.append('tab:blue')
+            
+        if (N[i-1,j]/(N[i-1,j]+(mu2/alpha_n2)) > I/(I+(mu2/alpha_i2))):
+            total_time_arr2.append(i)
+            total_zeta_arr2.append(zetas[j])
+            total_color_arr2.append('tab:red')
+        else:
+            total_time_arr2.append(i)
+            total_zeta_arr2.append(zetas[j])
+            total_color_arr2.append('tab:blue')
 
-        mu1_growth = np.minimum((N[i-1,j]/(N[i-1,j]+(mu1/alpha_n))), (I/(I+(mu1/alpha_i))))
-        mu2_growth = np.minimum((N[i-1,j]/(N[i-1,j]+(mu2/alpha_n))), (I/(I+(mu2/alpha_i))))
+        mu1_growth = np.minimum((N[i-1,j]/(N[i-1,j]+(mu1/alpha_n1))), (I/(I+(mu1/alpha_i1))))
+        mu2_growth = np.minimum((N[i-1,j]/(N[i-1,j]+(mu2/alpha_n2))), (I/(I+(mu2/alpha_i2))))
         dNdt = supply_rate[i] - (mu1*mu1_growth*P1[i-1,j]) - (mu2*mu2_growth*P2[i-1,j]) + (delta1*P1[i-1,j]) +(delta2*P2[i-1,j])
         #print('dNdt=', dNdt)
         dP1dt = (mu1*mu1_growth*P1[i-1,j]) - (phi1*P1[i-1,j]*C[i-1,j]) - (delta1*P1[i-1,j])
@@ -130,7 +143,7 @@ print('P1 shape = ', P1.shape)
 print('P2 shape = ', P2.shape)
 print('C shape = ', C.shape)
             
-fig, axs = plt.subplots(3,3,figsize=(30,12))
+fig, axs = plt.subplots(2,4,figsize=(30,12))
 
 #plotting supply rate over time
 axs[0,0].plot(t,supply_rate, color = 'black', linestyle = 'dotted')
@@ -148,14 +161,22 @@ divider = make_axes_locatable(axs[0,1])
 cax = divider.append_axes('right', size='5%', pad=0.05)
 fig.colorbar(cb, cax=cax, orientation='vertical')
 
-#showing min as either nutrients or light
-im = axs[0,2].scatter(total_time_arr, total_zeta_arr, c=total_color_arr)
+#showing min as either nutrients or light for producer 1
+im = axs[0,2].scatter(total_time_arr1, total_zeta_arr1, c=total_color_arr1)
 axs[0,2].set_ylim(axs[0,2].get_ylim()[::-1])
-axs[0,2].set_ylabel('Depth')
-axs[0,2].set_xlabel('Time')
+axs[0,2].set_ylabel('Depth (meters)')
+axs[0,2].set_xlabel('Time (days)')
+axs[0,2].set_title('Limiting Resource for Producer 1')
+
+#showing min as either nutrients or light for producer 2
+im = axs[0,3].scatter(total_time_arr2, total_zeta_arr2, c=total_color_arr2)
+axs[0,3].set_ylim(axs[0,3].get_ylim()[::-1])
+axs[0,3].set_ylabel('Depth (meters)')
+axs[0,3].set_xlabel('Time (meters)')
+axs[0,3].set_title('Limiting Resource for Producer 2')
 
 #plotting nutrients
-axs[1,0].pcolor(N.T,cmap = 'hot')
+axs[1,0].pcolor(np.log(N.T),cmap = 'hot')
 axs[1,0].set_xlabel('Time (days)', color = 'k')
 axs[1,0].set_ylabel('Concentration (mmol C/ m$^{3}$)', color = 'k')
 axs[1,0].set_title('Nutrient Concentration')
@@ -164,7 +185,7 @@ cax = divider.append_axes('right', size='5%', pad=0.05)
 fig.colorbar(cb, cax=cax, orientation='vertical')
 
 #plotting biomass
-pro1 = axs[1,1].pcolor(P1.T,cmap = 'hot')
+pro1 = axs[1,1].pcolor(np.log(P1.T),cmap = 'hot')
 axs[1,1].invert_yaxis()
 
 axs[1,1].set_xlabel('Time (days)', color = 'k')
@@ -174,7 +195,7 @@ divider = make_axes_locatable(axs[1,1])
 cax = divider.append_axes('right', size='5%', pad=0.05)
 fig.colorbar(cb, cax=cax, orientation='vertical')
 
-pro2 = axs[1,2].pcolor(P2.T, cmap = 'hot')
+pro2 = axs[1,2].pcolor(np.log(P2.T), cmap = 'hot')
 axs[1,2].invert_yaxis()
 axs[1,2].set_xlabel('Time (days)', color = 'k')
 axs[1,2].set_ylabel('Biomass (mmol C/ m$^{3}$ day)', color = 'k')
@@ -183,12 +204,12 @@ divider = make_axes_locatable(axs[1,2])
 cax = divider.append_axes('right', size='5%', pad=0.05)
 fig.colorbar(cb, cax=cax, orientation='vertical')
 
-con = axs[2,0].pcolor(C.T,cmap = 'hot')
-axs[2,0].invert_yaxis()
-axs[2,0].set_xlabel('Time (days)', color = 'k')
-axs[2,0].set_ylabel('Biomass (mmol C/ m$^{3}$ day)', color = 'k')
-axs[2,0].set_title('Biomass of Consumer')
-divider = make_axes_locatable(axs[2,0])
+con = axs[1,3].pcolor(np.log(C.T),cmap = 'hot')
+axs[1,3].invert_yaxis()
+axs[1,3].set_xlabel('Time (days)', color = 'k')
+axs[1,3].set_ylabel('Biomass (mmol C/ m$^{3}$ day)', color = 'k')
+axs[1,3].set_title('Biomass of Consumer')
+divider = make_axes_locatable(axs[1,3])
 cax = divider.append_axes('right', size='5%', pad=0.05)
 fig.colorbar(cb, cax=cax, orientation='vertical')
 
