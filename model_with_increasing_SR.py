@@ -123,14 +123,9 @@ for i in range(1, len(t)):
         mu1_growth = np.minimum((N[i-1,j]/(N[i-1,j]+(mu1/alpha_n1))), (I/(I+(mu1/alpha_i1))))
         mu2_growth = np.minimum((N[i-1,j]/(N[i-1,j]+(mu2/alpha_n2))), (I/(I+(mu2/alpha_i2))))
         dNdt = supply_rate[i] - (mu1*mu1_growth*P1[i-1,j]) - (mu2*mu2_growth*P2[i-1,j]) + (delta1*P1[i-1,j]) +(delta2*P2[i-1,j])
-        #print('dNdt=', dNdt)
         dP1dt = (mu1*mu1_growth*P1[i-1,j]) - (phi1*P1[i-1,j]*C[i-1,j]) - (delta1*P1[i-1,j])
         dP2dt = (mu2*mu2_growth*P2[i-1,j]) - (phi2*P2[i-1,j]*C[i-1,j]) - (delta2*P2[i-1,j])
-        #print('mu1_growth=', mu1_growth, 'mu2_growth=', mu2_growth, 'mu1*mu1_growth*P1[i-1,j]=', mu1*mu1_growth*P1[i-1,j], 'mu2*mu2_growth*P2[i-1,j]=', mu2*mu2_growth*P2[i-1,j], 'dP1dt=', dP1dt, 'dP2dt=', dP2dt)
         dCdt = (eps1*phi1*P1[i-1,j]*C[i-1,j]) + (eps2*phi2*P2[i-1,j]*C[i-1,j]) - (delta_c*C[i-1,j])
-        #print('dCdt=', dCdt)
-        #break
-        #stop
         N[i,j] = N[i-1,j] + dNdt * dt
         P1[i,j] = P1[i-1,j] + dP1dt * dt
         P2[i,j] = P2[i-1,j] + dP2dt * dt
