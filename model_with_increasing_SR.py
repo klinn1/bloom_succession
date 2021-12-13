@@ -74,21 +74,21 @@ for a in t:
     i = i + 1
         
 #parameter values
-phi1 = 0.2 #interaction strength for p1
-phi2 = 0.2 #interaction strength for p2
-eps1 = 0.4 #transfer efficiency for p1
-eps2 = 0.4 #transfer efficiency for p2
+phi1 = 0.1 #interaction strength for p1
+phi2 = 0.1 #interaction strength for p2
+eps1 = 0.3 #transfer efficiency for p1
+eps2 = 0.3 #transfer efficiency for p2
 delta_c = 0.001 #consumer mortality
 k_w = 0.02 #light attenuation by just water
 k_p = 0.001 #attenuation due to producers
 delta1 = 0.001 #death rate of producer 1
 delta2 = 0.001 #death rate of producer 2
 mu1 = 1.0 #resource affinity parameter for p1
-mu2 = 1.0 #resource affinity parameter for p2
-alpha_n1 = 0.17 #saturation of nutrients for producer 1
+mu2 = 0.8 #resource affinity parameter for p2
+alpha_n1 = 0.14 #saturation of nutrients for producer 1
 alpha_i1 = 0.017 #saturation of light for producer 1
-alpha_n2 = 0.17 #saturation of nutrients for producer 2
-alpha_i2 = 0.017 #saturation of light for producer 2
+alpha_n2 = 0.14 #saturation of nutrients for producer 2
+alpha_i2 = 0.014 #saturation of light for producer 2
  
 #building 2 dimensional arrays for nutrients, producer, and consumer groups
 total_time_arr1 = []
