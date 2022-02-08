@@ -42,7 +42,7 @@ k_w = 0.02 #light attenuation by just water
 k_p = 0.001 #attenuation due to producers
 
 #depth array
-deltaz = 1
+deltaz = 0.5
 depth = 100
 zetas = np.linspace(0,depth,int(depth/deltaz)) 
 
@@ -64,7 +64,7 @@ I_naughts.fill(2)
 
 #inital light irradiance (seasonal)
 I_max = 1000
-I_min = 500
+I_min = 300
 # I_naughts2 = (np.sin(((t)/365*2*math.pi-math.pi/2))+1)*I_max/2
 
 #combine I_naught arrays 

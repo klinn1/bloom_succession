@@ -73,7 +73,7 @@ for a in t:
     i = i + 1
         
 #parameter values
-phi1 = 0.15 #interaction strength for p1
+phi1 = 0.1 #interaction strength for p1
 phi2 = 0.1 #interaction strength for p2
 eps1 = 0.3 #transfer efficiency for p1
 eps2 = 0.3 #transfer efficiency for p2
@@ -136,87 +136,77 @@ print('N shape = ', N.shape)
 print('P1 shape = ', P1.shape)
 print('P2 shape = ', P2.shape)
 print('C shape = ', C.shape)
-            
-fig, axs = plt.subplots(2,4,figsize=(30,12))
 
-#plotting supply rate over time
-axs[0,0].plot(t,supply_rate, color = 'black', linestyle = 'dotted')
-axs[0,0].set_title('Supply Rate')
+N = N.T
+P1 = P1.T
+P2 = P2.T
+C = C.T
+
+fig, axs = plt.subplots(3,4,figsize=(30,12))
+
+axs[0,0].plot(t,np.log(N[0, :]), color = 'red')
+axs[0,0].set_title('Nutrients at surface')
 axs[0,0].set_xlabel('time (days)')
-axs[0,0].set_ylabel('$S_R$')
+axs[0,0].set_ylabel('Nutrient Concentration')
 
-#contour plot of seasonal irradiance
-cb = axs[0,1].pcolor(light.T,cmap = 'hot')
-axs[0,1].invert_yaxis()
-axs[0,1].set_xlabel('Time (Days)', color = 'k')
-axs[0,1].set_ylabel('Depth (Meters)', color = 'k')
-axs[0,1].set_title('Irradiance')
-divider = make_axes_locatable(axs[0,1])
-cax = divider.append_axes('right', size='5%', pad=0.05)
-fig.colorbar(cb, cax=cax, orientation='vertical')
+axs[1,0].plot(t,np.log(N[50, :]), color = 'red')
+axs[1,0].set_title('Nutrients at half depth')
+axs[1,0].set_xlabel('time (days)')
+axs[1,0].set_ylabel('Nutrient Concentration')
 
-#showing min as either nutrients or light for producer 1
-im = axs[0,2].scatter(total_time_arr1, total_zeta_arr1, c=total_color_arr1)
-axs[0,2].set_ylim(axs[0,2].get_ylim()[::-1])
-axs[0,2].set_ylabel('Depth (meters)')
-axs[0,2].set_xlabel('Time (days)')
-axs[0,2].set_title('Limiting Resource for Producer 1')
+axs[2,0].plot(t,np.log(N[100, :]), color = 'red')
+axs[2,0].set_title('Nutrients at full depth')
+axs[2,0].set_xlabel('time (days)')
+axs[2,0].set_ylabel('Nutrient Concentration')
 
-#showing min as either nutrients or light for producer 2
-im = axs[0,3].scatter(total_time_arr2, total_zeta_arr2, c=total_color_arr2)
-axs[0,3].set_ylim(axs[0,3].get_ylim()[::-1])
-axs[0,3].set_ylabel('Depth (meters)')
-axs[0,3].set_xlabel('Time (meters)')
-axs[0,3].set_title('Limiting Resource for Producer 2')
+axs[0,1].plot(t,np.log(P1[0, :]), color = 'orange', linestyle = 'dashed')
+axs[0,1].set_title('Producer 1 at surface')
+axs[0,1].set_xlabel('time (days)')
+axs[0,1].set_ylabel('Producer Biomass')
 
-#plotting nutrients
-axs[1,0].pcolor(np.log(N.T),cmap = 'hot')
-axs[1,0].set_xlabel('Time (days)', color = 'k')
-axs[1,0].set_ylabel('Concentration (mmol C/ m$^{3}$)', color = 'k')
-axs[1,0].set_title('Nutrient Concentration')
-divider = make_axes_locatable(axs[1,0])
-cax = divider.append_axes('right', size='5%', pad=0.05)
-fig.colorbar(cb, cax=cax, orientation='vertical')
+axs[1,1].plot(t,np.log(P1[50, :]), color = 'orange', linestyle = 'dashed')
+axs[1,1].set_title('Producer 1 at half depth')
+axs[1,1].set_xlabel('time (days)')
+axs[1,1].set_ylabel('Producer Biomass')
 
-#plotting biomass
-pro1 = axs[1,1].pcolor(np.log(P1.T),cmap = 'hot')
-axs[1,1].invert_yaxis()
+axs[2,1].plot(t,np.log(P1[100, :]), color = 'orange', linestyle = 'dashed')
+axs[2,1].set_title('Producer 1 at full depth')
+axs[2,1].set_xlabel('time (days)')
+axs[2,1].set_ylabel('Producer Biomass')
 
-axs[1,1].set_xlabel('Time (days)', color = 'k')
-axs[1,1].set_ylabel('Biomass (mmol C/ m$^{3}$ day)', color = 'k')
-axs[1,1].set_title('Biomass of Producer 1')
-divider = make_axes_locatable(axs[1,1])
-cax = divider.append_axes('right', size='5%', pad=0.05)
-fig.colorbar(cb, cax=cax, orientation='vertical')
+axs[0,2].plot(t,np.log(P2[0, :]), color = 'blue')
+axs[0,2].set_title('Producer 2 at surface')
+axs[0,2].set_xlabel('time (days)')
+axs[0,2].set_ylabel('Producer Biomass')
 
-pro2 = axs[1,2].pcolor(np.log(P2.T), cmap = 'hot')
-axs[1,2].invert_yaxis()
-axs[1,2].set_xlabel('Time (days)', color = 'k')
-axs[1,2].set_ylabel('Biomass (mmol C/ m$^{3}$ day)', color = 'k')
-axs[1,2].set_title('Biomass of Producer 2')
-divider = make_axes_locatable(axs[1,2])
-cax = divider.append_axes('right', size='5%', pad=0.05)
-fig.colorbar(cb, cax=cax, orientation='vertical')
+axs[1,2].plot(t,np.log(P2[50, :]), color = 'blue')
+axs[1,2].set_title('Producer 2 at half depth')
+axs[1,2].set_xlabel('time (days)')
+axs[1,2].set_ylabel('Producer Biomass')
 
-con = axs[1,3].pcolor(np.log(C.T),cmap = 'hot')
-axs[1,3].invert_yaxis()
-axs[1,3].set_xlabel('Time (days)', color = 'k')
-axs[1,3].set_ylabel('Biomass (mmol C/ m$^{3}$ day)', color = 'k')
-axs[1,3].set_title('Biomass of Consumer')
-divider = make_axes_locatable(axs[1,3])
-cax = divider.append_axes('right', size='5%', pad=0.05)
-fig.colorbar(cb, cax=cax, orientation='vertical')
+axs[2,2].plot(t,np.log(P2[100, :]), color = 'blue')
+axs[2,2].set_title('Producer 2 at full depth')
+axs[2,2].set_xlabel('time (days)')
+axs[2,2].set_ylabel('Producer Biomass')
 
-#supply rate versus producers (succesional pattern)
-#axs[4].plot(supply_rate,P1.T[0], '--', color = 'orange')
-# #axs[4].plot(supply_rate,P2.T[0], color = 'blue')
-# #axs[4].set_title('Producer Biomass as $S_R$ Increases')
-# #axs[4].set_ylabel('Biomass (mmol C/ m$^{3}$ day)', color = 'k')
-# #axs[4].set_xlabel('$S_R$')
+axs[0,3].plot(t,np.log(C[0, :]), color = 'grey', linestyle = 'dotted')
+axs[0,3].set_title('Consumer at surface')
+axs[0,3].set_xlabel('time (days)')
+axs[0,3].set_ylabel('Consumer Biomass')
+
+axs[1,3].plot(t,np.log(C[50, :]), color = 'grey', linestyle = 'dotted')
+axs[1,3].set_title('Consumer at half depth')
+axs[1,3].set_xlabel('time (days)')
+axs[1,3].set_ylabel('Consumer Biomass')
+
+axs[2,3].plot(t,np.log(C[100, :]), color = 'grey', linestyle = 'dotted')
+axs[2,3].set_title('Consumer at full depth')
+axs[2,3].set_xlabel('time (days)')
+axs[2,3].set_ylabel('Consumer Biomass')
 
 
-plt.tight_layout()
 plt.show()
+
 
 
 

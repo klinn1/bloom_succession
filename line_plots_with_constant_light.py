@@ -11,10 +11,6 @@ dt = 1
 #time array
 t = np.linspace(0, T, int(T/dt))
 
-#first 5 years = 0-1825 days
-#second 5 years = 1826 - 3650 days
-#third 5 years = 3651 - 5475 days
-
 supply_rate = np.empty(3650)
 supply_rate.fill(0.04)
 
@@ -66,10 +62,10 @@ I_min = 300
 
 i = 0
 for a in t:
-    if a<=1825.0:
+    if a<=0.0:
         I_naughts[i] = I_min
     else:
-        I_naughts[i] = I_min + (I_max-I_min)/2.*(np.sin(((a)/365*2*np.pi-np.pi/2))+1)
+        I_naughts[i] = I_min #+ (I_max-I_min)/2.*(np.sin(((a)/365*2*np.pi-np.pi/2))+1)
     i = i + 1
         
 #parameter values
@@ -170,42 +166,42 @@ axs[0,3].set_xlabel('Time (meters)')
 axs[0,3].set_title('Limiting Resource for Producer 2')
 
 #plotting nutrients
-axs[1,0].pcolor(np.log(N.T),cmap = 'hot')
+axs[1,0].plot(np.log(N.T[0]))
 axs[1,0].set_xlabel('Time (days)', color = 'k')
 axs[1,0].set_ylabel('Concentration (mmol C/ m$^{3}$)', color = 'k')
 axs[1,0].set_title('Nutrient Concentration')
-divider = make_axes_locatable(axs[1,0])
-cax = divider.append_axes('right', size='5%', pad=0.05)
-fig.colorbar(cb, cax=cax, orientation='vertical')
+#divider = make_axes_locatable(axs[1,0])
+#cax = divider.append_axes('right', size='5%', pad=0.05)
+#fig.colorbar(cb, cax=cax, orientation='vertical')
 
 #plotting biomass
-pro1 = axs[1,1].pcolor(np.log(P1.T),cmap = 'hot')
+pro1 = axs[1,1].plot(np.log(P1.T[0]))
 axs[1,1].invert_yaxis()
 
 axs[1,1].set_xlabel('Time (days)', color = 'k')
 axs[1,1].set_ylabel('Biomass (mmol C/ m$^{3}$ day)', color = 'k')
 axs[1,1].set_title('Biomass of Producer 1')
-divider = make_axes_locatable(axs[1,1])
-cax = divider.append_axes('right', size='5%', pad=0.05)
-fig.colorbar(cb, cax=cax, orientation='vertical')
+#divider = make_axes_locatable(axs[1,1])
+#cax = divider.append_axes('right', size='5%', pad=0.05)
+#fig.colorbar(cb, cax=cax, orientation='vertical')
 
-pro2 = axs[1,2].pcolor(np.log(P2.T), cmap = 'hot')
+pro2 = axs[1,2].plot(np.log(P2.T[0]))
 axs[1,2].invert_yaxis()
 axs[1,2].set_xlabel('Time (days)', color = 'k')
 axs[1,2].set_ylabel('Biomass (mmol C/ m$^{3}$ day)', color = 'k')
 axs[1,2].set_title('Biomass of Producer 2')
-divider = make_axes_locatable(axs[1,2])
-cax = divider.append_axes('right', size='5%', pad=0.05)
-fig.colorbar(cb, cax=cax, orientation='vertical')
+#divider = make_axes_locatable(axs[1,2])
+#cax = divider.append_axes('right', size='5%', pad=0.05)
+#fig.colorbar(cb, cax=cax, orientation='vertical')
 
-con = axs[1,3].pcolor(np.log(C.T),cmap = 'hot')
+con = axs[1,3].plot(np.log(C.T[0]))
 axs[1,3].invert_yaxis()
 axs[1,3].set_xlabel('Time (days)', color = 'k')
 axs[1,3].set_ylabel('Biomass (mmol C/ m$^{3}$ day)', color = 'k')
 axs[1,3].set_title('Biomass of Consumer')
-divider = make_axes_locatable(axs[1,3])
-cax = divider.append_axes('right', size='5%', pad=0.05)
-fig.colorbar(cb, cax=cax, orientation='vertical')
+#divider = make_axes_locatable(axs[1,3])
+#cax = divider.append_axes('right', size='5%', pad=0.05)
+#fig.colorbar(cb, cax=cax, orientation='vertical')
 
 #supply rate versus producers (succesional pattern)
 #axs[4].plot(supply_rate,P1.T[0], '--', color = 'orange')
@@ -217,7 +213,3 @@ fig.colorbar(cb, cax=cax, orientation='vertical')
 
 plt.tight_layout()
 plt.show()
-
-
-
-

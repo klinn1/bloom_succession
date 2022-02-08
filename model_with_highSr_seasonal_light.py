@@ -11,32 +11,8 @@ dt = 1
 #time array
 t = np.linspace(0, T, int(T/dt))
 
-#first 5 years = 0-1825 days
-#second 5 years = 1826 - 3650 days
-#third 5 years = 3651 - 5475 days
-
-supply_rate = np.empty(3650)
-supply_rate.fill(0.04)
-
-year11 = np.empty(365)
-year11.fill(0.08)
-supply_rate = np.append(supply_rate,year11)
-
-year12 = np.empty(365)
-year12.fill(0.11)
-supply_rate = np.append(supply_rate,year12)
-
-year13 = np.empty(365)
-year13.fill(0.14)
-supply_rate = np.append(supply_rate,year13)
-
-year14 = np.empty(365)
-year14.fill(0.17)
-supply_rate = np.append(supply_rate,year14)
-
-year15 = np.empty(365)
-year15.fill(0.20)
-supply_rate = np.append(supply_rate,year15)
+supply_rate = np.empty(5475)
+supply_rate.fill(1.0)
 
 k_w = 0.02 #light attenuation by just water
 k_p = 0.001 #attenuation due to producers
@@ -66,7 +42,7 @@ I_min = 300
 
 i = 0
 for a in t:
-    if a<=1825.0:
+    if a<=0:
         I_naughts[i] = I_min
     else:
         I_naughts[i] = I_min + (I_max-I_min)/2.*(np.sin(((a)/365*2*np.pi-np.pi/2))+1)
@@ -217,7 +193,3 @@ fig.colorbar(cb, cax=cax, orientation='vertical')
 
 plt.tight_layout()
 plt.show()
-
-
-
-
